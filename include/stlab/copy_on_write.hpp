@@ -212,9 +212,7 @@ public:
         assert(!_self || ((_self->_count > 0) && "FATAL (sparent) : double delete"));
         if (_self && (_self->_count.fetch_sub(1, std::memory_order_release) == 1)) {
             std::atomic_thread_fence(std::memory_order_acquire);
-            if constexpr (std::is_default_constructible_v<element_type>) {
-                assert(_self != default_model());
-            }
+            assert(_self != default_model());
             delete _self;
         }
     }
