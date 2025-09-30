@@ -19,13 +19,18 @@
 
 /**************************************************************************************************/
 
+/// @defgroup member_types Member Types
+/// @defgroup member_functions Member Functions
+/// @defgroup observers Observers
+/// @defgroup non_member_functions Non-Member Functions
+
 /*!
-    @mainpage stlab::copy_on_write
+    @mainpage
 
     [![Source
    Code](https://img.shields.io/badge/Source_Code-blue?logo=github)](https://github.com/stlab/copy-on-write)
 
-    @section intro_sec Introduction
+    @section intro_sec Description
 
     The `stlab::copy_on_write<T>` class provides a copy-on-write wrapper for any type that models
     Regular. This implementation allows multiple instances to share the same underlying data until
@@ -49,6 +54,21 @@
     - **Thread-safe**: Uses atomic reference counting for safe concurrent access
     - **Header-only**: No compilation required, just include the header
     - **C++17**: Leverages modern C++ features for clean, efficient implementation
+
+    @section copy_on_write_sec Class `stlab::copy_on_write<T>`
+    @copydoc stlab::copy_on_write
+
+    @subsection member_types_sec Member Types
+    @ref member_types
+
+    @subsection member_functions_sec Member Functions
+    @ref member_functions
+
+    @subsubsection observers_sec Observers
+    @ref observers
+
+    @subsection non_member_functions_sec Non-Member Functions
+    @ref non_member_functions
 
     @section usage_sec Basic Usage
 
@@ -129,18 +149,23 @@ class copy_on_write {
     }
 
 public:
+    /*! @addtogroup member_types
+    @{ */
     /*!
         @deprecated Use element_type instead. The type of value stored.
     */
     /* [[deprecated]] */ using value_type = T;
 
     /*!
-        The type of value stored.
+        @brief The type of value stored
     */
     using element_type = T;
+    /*! @} */
 
+    /*! @addtogroup member_functions
+    @{ */
     /*!
-        Default constructs the wrapped value.
+        @brief Default constructs the wrapped value.
     */
     copy_on_write() noexcept(std::is_nothrow_constructible_v<T>) {
         _self = default_model();
@@ -150,20 +175,21 @@ public:
     }
 
     /*!
-        Constructs a new instance by forwarding arguments to the wrapped value constructor.
+        @brief Constructs a new instance by forwarding arguments to the wrapped value constructor.
     */
     template <class U>
     copy_on_write(U&& x, disable_copy<U> = nullptr) : _self(new model(std::forward<U>(x))) {}
 
     /*!
-        Constructs a new instance by forwarding multiple arguments to the wrapped value constructor.
+        @brief Constructs a new instance by forwarding multiple arguments to the wrapped value
+       constructor.
     */
     template <class U, class V, class... Args>
     copy_on_write(U&& x, V&& y, Args&&... args) :
         _self(new model(std::forward<U>(x), std::forward<V>(y), std::forward<Args>(args)...)) {}
 
     /*!
-        Copy constructor that shares the underlying data with the source object.
+        @brief Copy constructor that shares the underlying data with the source object.
     */
     copy_on_write(const copy_on_write& x) noexcept : _self(x._self) {
         assert(_self && "FATAL (sparent) : using a moved copy_on_write object");
@@ -173,12 +199,15 @@ public:
     }
 
     /*!
-        Move constructor that takes ownership of the source object's data.
+        @brief Move constructor that takes ownership of the source object's data.
     */
     copy_on_write(copy_on_write&& x) noexcept : _self{std::exchange(x._self, nullptr)} {
         assert(_self && "WARNING (sparent) : using a moved copy_on_write object");
     }
 
+    /*!
+        @brief Destructor
+    */
     ~copy_on_write() {
         assert(!_self || ((_self->_count > 0) && "FATAL (sparent) : double delete"));
         if (_self && (_self->_count.fetch_sub(1, std::memory_order_release) == 1)) {
@@ -191,7 +220,7 @@ public:
     }
 
     /*!
-        Copy assignment operator that shares the underlying data with the source object.
+        @brief Copy assignment operator that shares the underlying data with the source object.
     */
     auto operator=(const copy_on_write& x) noexcept -> copy_on_write& {
         // self-assignment is not allowed to disable cert-oop54-cpp warning (and is likely a bug)
@@ -200,7 +229,7 @@ public:
     }
 
     /*!
-        Move assignment operator that takes ownership of the source object's data.
+        @brief Move assignment operator that takes ownership of the source object's data.
     */
     auto operator=(copy_on_write&& x) noexcept -> copy_on_write& {
         auto tmp{std::move(x)};
@@ -209,7 +238,8 @@ public:
     }
 
     /*!
-        Assigns a new value to the wrapped object, optimizing for in-place assignment when unique.
+        @brief Assigns a new value to the wrapped object, optimizing for in-place assignment when
+       unique.
     */
     template <class U>
     auto operator=(U&& x) -> disable_copy_assign<U> {
@@ -221,8 +251,11 @@ public:
         return *this = copy_on_write(std::forward<U>(x));
     }
 
+    /*! @addtogroup observers
+    @{ */
+
     /*!
-        Obtains a non-const reference to the underlying value.
+        @brief Obtains a non-const reference to the underlying value.
 
         This will copy the underlying value if necessary so changes to the value do not affect
         other copy_on_write objects sharing the same data.
@@ -234,9 +267,10 @@ public:
     }
 
     /*!
-        If the object is not unique, the transform is applied to the underlying value to copy it and
-        a reference to the new value is returned. If the object is unique, the inplace function is
-        called with a reference to the underlying value and a reference to the value is returned.
+        @brief If the object is not unique, the transform is applied to the underlying value to copy
+       it and a reference to the new value is returned. If the object is unique, the inplace
+       function is called with a reference to the underlying value and a reference to the value is
+       returned.
 
         @param transform A function object that takes a const reference to the underlying value and
         returns a new value.
@@ -262,7 +296,7 @@ public:
     }
 
     /*!
-        Returns a const reference to the underlying value for read-only access.
+        @brief Returns a const reference to the underlying value for read-only access.
     */
     [[nodiscard]] auto read() const noexcept -> const element_type& {
         assert(_self && "FATAL (sparent) : using a moved copy_on_write object");
@@ -271,22 +305,22 @@ public:
     }
 
     /*!
-        Implicit conversion to const reference of the underlying value.
+        @brief Implicit conversion to const reference of the underlying value.
     */
     operator const element_type&() const noexcept { return read(); }
 
     /*!
-        Dereference operator that returns a const reference to the underlying value.
+        @brief Dereference operator that returns a const reference to the underlying value.
     */
     auto operator*() const noexcept -> const element_type& { return read(); }
 
     /*!
-        Arrow operator that returns a const pointer to the underlying value.
+        @brief Arrow operator that returns a const pointer to the underlying value.
     */
     auto operator->() const noexcept -> const element_type* { return &read(); }
 
     /*!
-        Returns true if this is the only reference to the underlying object.
+        @brief Returns true if this is the only reference to the underlying object.
 
         This is useful to determine if calling write() will cause a copy.
     */
@@ -303,7 +337,7 @@ public:
     [[deprecated]] [[nodiscard]] auto unique_instance() const noexcept -> bool { return unique(); }
 
     /*!
-        Returns true if this object and the given object share the same underlying data.
+        @brief Returns true if this object and the given object share the same underlying data.
     */
     [[nodiscard]] auto identity(const copy_on_write& x) const noexcept -> bool {
         assert((_self && x._self) && "FATAL (sparent) : using a moved copy_on_write object");
@@ -311,8 +345,14 @@ public:
         return _self == x._self;
     }
 
+    /*! @} */
+    /*! @} */
+
     /*!
-        Efficiently swaps the contents of two copy_on_write objects.
+        @addtogroup non_member_functions
+        @{ */
+    /*!
+        @brief Efficiently swaps the contents of two copy_on_write objects.
     */
     friend inline void swap(copy_on_write& x, copy_on_write& y) noexcept {
         std::swap(x._self, y._self);
@@ -320,7 +360,7 @@ public:
 
     /*! @{ */
     /*!
-        Comparisons can be done with the underlying value or the copy_on_write object.
+        @brief Comparisons can be done with the underlying value or the copy_on_write object.
     */
     friend inline auto operator<(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return !x.identity(y) && (*x < *y);
@@ -393,6 +433,7 @@ public:
     friend inline auto operator!=(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return !(x == y);
     }
+    /*! @} */
     /*! @} */
 };
 /**************************************************************************************************/

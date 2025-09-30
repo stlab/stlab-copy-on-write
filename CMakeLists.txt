@@ -8,6 +8,7 @@ include(cmake/CPM.cmake)
 
 # Fetch cpp-library via CPM
 
+# https://github.com/stlab/cpp-library
 # CPMAddPackage(
 #     NAME cpp-library
 #     URL "${CMAKE_SOURCE_DIR}/../cpp-library"

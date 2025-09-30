@@ -9,6 +9,7 @@
 #include <cassert>
 #include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <string>
 #include <vector>
 
@@ -45,14 +46,19 @@ public:
     size_t size() const { return _lines.read().size(); }
     bool empty() const { return _lines.read().empty(); }
 
+    /// Return true if the two documents share the same underlying data.
     bool identity(const document& other) const { return _lines.identity(other._lines); }
 
+    /// Insert a line at the given index.
     void insert(std::string&& line, size_t index) {
         assert(index <= size() && "index out of bounds");
         _lines.write(
             [&](const std::vector<std::string>& lines) {
-                std::vector<std::string> new_lines = lines;
-                new_lines.insert(new_lines.begin() + index, std::move(line));
+                std::vector<std::string> new_lines;
+                new_lines.reserve((lines.size() + 1) * 2);
+                new_lines.insert(new_lines.end(), lines.begin(), lines.begin() + index);
+                new_lines.insert(new_lines.end(), std::move(line));
+                new_lines.insert(new_lines.end(), lines.begin() + index, lines.end());
                 return new_lines;
             },
             [&](std::vector<std::string>& lines) {
@@ -61,14 +67,15 @@ public:
             });
     }
 
+    /// Erase a line at the given index.
     void erase(size_t index) {
-        assert(index <= size() && "index out of bounds");
+        assert(index < size() && "index out of bounds");
         _lines.write(
             [&](const std::vector<std::string>& lines) {
-                std::vector<std::string> new_lines = lines;
-                if (index < lines.size()) {
-                    new_lines.erase(new_lines.begin() + index);
-                }
+                std::vector<std::string> new_lines;
+                new_lines.reserve((lines.size() - 1) * 2);
+                new_lines.insert(new_lines.end(), lines.begin(), lines.begin() + index);
+                new_lines.insert(new_lines.end(), lines.begin() + index + 1, lines.end());
                 return new_lines;
             },
             [&](std::vector<std::string>& lines) {
