@@ -6,17 +6,17 @@
 
 Copy-on-write wrapper for any type.
 
-[ci-badge]: https://github.com/stlab/copy-on-write/workflows/CI/badge.svg
-[ci-link]: https://github.com/stlab/copy-on-write/actions/workflows/ci.yml
+[ci-badge]: https://github.com/stlab/stlab-copy-on-write/workflows/CI/badge.svg
+[ci-link]: https://github.com/stlab/stlab-copy-on-write/actions/workflows/ci.yml
 [docs-badge]: https://img.shields.io/badge/docs-github%20pages-blue
-[docs-link]: https://stlab.github.io/copy-on-write/
+[docs-link]: https://stlab.github.io/stlab-copy-on-write/
 [license-badge]: https://img.shields.io/badge/license-BSL%201.0-blue.svg
-[license-link]: https://github.com/stlab/copy-on-write/blob/main/LICENSE
+[license-link]: https://github.com/stlab/stlab-copy-on-write/blob/main/LICENSE
 
 ## Overview
 
 **Online Documentation:**
-The latest documentation is automatically built and deployed to [GitHub Pages](https://stlab.github.io/copy-on-write/) on every push to the main branch.
+The latest documentation is automatically built and deployed to [GitHub Pages](https://stlab.github.io/stlab-copy-on-write/) on every push to the main branch.
 
 **Version Management:**
 The project version is maintained in a single location in the `project()` command at the top of
@@ -62,11 +62,7 @@ ctest --preset=test
 To include this library in your project using CPM:
 
 ```cmake
-CPMAddPackage(
-    NAME stlab-copy-on-write
-    GITHUB_REPOSITORY stlab/copy-on-write
-    GIT_TAG main # or specify a version tag
-)
+CPMAddPackage("gh:stlab/stlab-copy-on-write@X.Y.Z")
 
 target_link_libraries(your_target PRIVATE stlab::copy-on-write)
 ```
