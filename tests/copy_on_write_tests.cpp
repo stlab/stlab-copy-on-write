@@ -258,3 +258,16 @@ TEST_CASE("copy_on_write with complex types") {
     CHECK(cow2->value == 42);
     CHECK_FALSE(cow.identity(cow2));
 }
+
+TEST_CASE("copy_on_write long unique write overlaps with sharing") {
+    // This shows how NOT to use copy_on_write.
+    // Write-scopes should never overlap with copying.
+    copy_on_write<int> cow1(42);
+    int& w = cow1.write();
+    CHECK(cow1.unique());
+    const copy_on_write<int> cow2{cow1}; // potentially run on other thread, intending to just grab a read-only copy
+    CHECK_FALSE(cow1.unique());
+    CHECK(*cow2 == 42);
+    w = 100;
+    CHECK(*cow2 == 100); // other thread is surprised to see a new value
+}
