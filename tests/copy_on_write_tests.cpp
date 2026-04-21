@@ -69,7 +69,7 @@ TEST_CASE("copy_on_write copy semantics") {
 
         CHECK(cow1.identity(cow2));
 
-        cow2.write() = 100; // This should trigger copy-on-write
+        cow2.write([](int) { return 100; }); // This should trigger copy-on-write
 
         CHECK(*cow1 == 42);
         CHECK(*cow2 == 100);
@@ -150,8 +150,7 @@ TEST_CASE("copy_on_write access methods") {
     }
 
     SUBCASE("write access when unique") {
-        auto& ref = cow.write();
-        ref = "world";
+        cow.write([](std::string& v) { v = "world"; });
         CHECK(*cow == "world");
         CHECK(cow.unique());
     }
@@ -253,7 +252,7 @@ TEST_CASE("copy_on_write with complex types") {
     copy_on_write<TestStruct> cow2(cow);
     CHECK(cow.identity(cow2));
 
-    cow.write().value = 100;
+    cow.write([](TestStruct& value) { value.value = 100; });
     CHECK(cow->value == 100);
     CHECK(cow2->value == 42);
     CHECK_FALSE(cow.identity(cow2));
