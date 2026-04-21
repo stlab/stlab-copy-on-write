@@ -267,6 +267,48 @@ public:
     }
 
     /*!
+        @brief Applies `inplace` to the underlying value.
+
+        If the object is not unique, the underlying value is first copied and then `inplace` is
+        invoked on the new, unique value. If the object is already unique, `inplace` is invoked
+        directly.
+
+        @param inplace A function object that takes a reference to the underlying value and modifies
+        it in place.
+    */
+    template <class Inplace>
+    auto write(Inplace inplace)
+        -> std::enable_if_t<std::is_invocable_v<Inplace, T&> &&
+                            std::is_same_v<std::invoke_result_t<Inplace, T&>, void>> {
+        if (!unique()) {
+            *this = copy_on_write(read());
+        }
+
+        inplace(_self->_value);
+    }
+
+    /*!
+        @brief Replaces the underlying value with the result of `transform`.
+
+        If the object is not unique, `transform` is applied to the current value to produce a new
+        value, and the object is rebound to that new value. If the object is already unique, the
+        stored value is updated in place.
+
+        @param transform A function object that takes a const reference to the underlying value and
+        returns a new value.
+    */
+    template <class Transform>
+    auto write(Transform transform)
+        -> std::enable_if_t<std::is_invocable_v<Transform, const T&> &&
+                            std::is_same_v<std::invoke_result_t<Transform, const T&>, T>> {
+        if (!unique()) {
+            *this = copy_on_write(transform(read()));
+        } else {
+            _self->_value = transform(_self->_value);
+        }
+    }
+
+    /*!
         @brief If the object is not unique, the transform is applied to the underlying value to copy
        it and a reference to the new value is returned. If the object is unique, the inplace
        function is called with a reference to the underlying value and a reference to the value is
