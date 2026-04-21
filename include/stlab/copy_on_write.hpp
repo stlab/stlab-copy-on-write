@@ -310,19 +310,16 @@ public:
 
     /*!
         @brief If the object is not unique, the transform is applied to the underlying value to copy
-       it and a reference to the new value is returned. If the object is unique, the inplace
-       function is called with a reference to the underlying value and a reference to the value is
-       returned.
+       it. If the object is unique, the inplace function is called with a reference to the
+       underlying value.
 
         @param transform A function object that takes a const reference to the underlying value and
         returns a new value.
         @param inplace A function object that takes a reference to the underlying value and modifies
         it in place.
-
-        @return A reference to the underlying value.
     */
     template <class Transform, class Inplace>
-    auto write(Transform transform, Inplace inplace) -> element_type& {
+    void write(Transform transform, Inplace inplace) {
         static_assert(std::is_invocable_r_v<T, Transform, const T&>,
                       "Transform must be invocable with const T&");
         static_assert(std::is_invocable_r_v<void, Inplace, T&>,
@@ -333,8 +330,6 @@ public:
         } else {
             inplace(_self->_value);
         }
-
-        return _self->_value;
     }
 
     /*!
