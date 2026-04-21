@@ -54,7 +54,7 @@ public:
         _lines.write(
             [&](const std::vector<std::string>& lines) {
                 std::vector<std::string> new_lines;
-                new_lines.reserve((lines.size() + 1) * 2);
+                new_lines.reserve(lines.size() + 1);
                 new_lines.insert(new_lines.end(), lines.begin(), lines.begin() + index);
                 new_lines.insert(new_lines.end(), std::move(line));
                 new_lines.insert(new_lines.end(), lines.begin() + index, lines.end());
@@ -72,7 +72,7 @@ public:
         _lines.write(
             [&](const std::vector<std::string>& lines) {
                 std::vector<std::string> new_lines;
-                new_lines.reserve((lines.size() - 1) * 2);
+                new_lines.reserve(lines.size() - 1);
                 new_lines.insert(new_lines.end(), lines.begin(), lines.begin() + index);
                 new_lines.insert(new_lines.end(), lines.begin() + index + 1, lines.end());
                 return new_lines;
