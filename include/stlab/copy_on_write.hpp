@@ -260,7 +260,7 @@ public:
         This will copy the underlying value if necessary so changes to the value do not affect
         other copy_on_write objects sharing the same data.
     */
-    auto write() -> element_type& {
+    [[deprecated]] auto write() -> element_type& {
         if (!unique()) *this = copy_on_write(read());
 
         return _self->_value;
