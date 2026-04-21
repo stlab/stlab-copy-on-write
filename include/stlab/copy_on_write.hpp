@@ -354,7 +354,7 @@ public:
     /*!
         @brief Efficiently swaps the contents of two copy_on_write objects.
     */
-    friend inline void swap(copy_on_write& x, copy_on_write& y) noexcept {
+    friend void swap(copy_on_write& x, copy_on_write& y) noexcept {
         std::swap(x._self, y._self);
     }
 
@@ -362,75 +362,75 @@ public:
     /*!
         @brief Comparisons can be done with the underlying value or the copy_on_write object.
     */
-    friend inline auto operator<(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator<(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return !x.identity(y) && (*x < *y);
     }
 
-    friend inline auto operator<(const copy_on_write& x, const element_type& y) noexcept -> bool {
+    friend auto operator<(const copy_on_write& x, const element_type& y) noexcept -> bool {
         return *x < y;
     }
 
-    friend inline auto operator<(const element_type& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator<(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return x < *y;
     }
 
-    friend inline auto operator>(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator>(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return y < x;
     }
 
-    friend inline auto operator>(const copy_on_write& x, const element_type& y) noexcept -> bool {
+    friend auto operator>(const copy_on_write& x, const element_type& y) noexcept -> bool {
         return y < x;
     }
 
-    friend inline auto operator>(const element_type& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator>(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return y < x;
     }
 
-    friend inline auto operator<=(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator<=(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return !(y < x);
     }
 
-    friend inline auto operator<=(const copy_on_write& x, const element_type& y) noexcept -> bool {
+    friend auto operator<=(const copy_on_write& x, const element_type& y) noexcept -> bool {
         return !(y < x);
     }
 
-    friend inline auto operator<=(const element_type& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator<=(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return !(y < x);
     }
 
-    friend inline auto operator>=(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator>=(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return !(x < y);
     }
 
-    friend inline auto operator>=(const copy_on_write& x, const element_type& y) noexcept -> bool {
+    friend auto operator>=(const copy_on_write& x, const element_type& y) noexcept -> bool {
         return !(x < y);
     }
 
-    friend inline auto operator>=(const element_type& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator>=(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return !(x < y);
     }
 
-    friend inline auto operator==(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator==(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return x.identity(y) || (*x == *y);
     }
 
-    friend inline auto operator==(const copy_on_write& x, const element_type& y) noexcept -> bool {
+    friend auto operator==(const copy_on_write& x, const element_type& y) noexcept -> bool {
         return *x == y;
     }
 
-    friend inline auto operator==(const element_type& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator==(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return x == *y;
     }
 
-    friend inline auto operator!=(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator!=(const copy_on_write& x, const copy_on_write& y) noexcept -> bool {
         return !(x == y);
     }
 
-    friend inline auto operator!=(const copy_on_write& x, const element_type& y) noexcept -> bool {
+    friend auto operator!=(const copy_on_write& x, const element_type& y) noexcept -> bool {
         return !(x == y);
     }
 
-    friend inline auto operator!=(const element_type& x, const copy_on_write& y) noexcept -> bool {
+    friend auto operator!=(const element_type& x, const copy_on_write& y) noexcept -> bool {
         return !(x == y);
     }
     /*! @} */
