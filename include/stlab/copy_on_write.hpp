@@ -28,7 +28,7 @@
     @mainpage
 
     [![Source
-   Code](https://img.shields.io/badge/Source_Code-blue?logo=github)](https://github.com/stlab/copy-on-write)
+   Code](https://img.shields.io/badge/Source_Code-blue?logo=github)](https://github.com/stlab/stlab-copy-on-write)
 
     @section intro_sec Description
 
