@@ -143,10 +143,18 @@ class copy_on_write {
     using disable_copy_assign =
         std::enable_if_t<!std::is_same_v<std::decay_t<U>, copy_on_write>, copy_on_write&>;
 
+    // suppress "unreachable code" warning, conditional noexcept seems to throw off MSVC analyzer
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable : 4702)
+#endif
     auto default_model() noexcept(std::is_nothrow_constructible_v<T>) -> model* {
         static model default_s;
         return &default_s;
     }
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
 public:
     /*! @addtogroup member_types
