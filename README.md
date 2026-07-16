@@ -144,7 +144,8 @@ To install or update CMake:
 
 #### CPM.cmake
 
-[DEPENDENCY]
+<!-- [DEPENDENCY] -->
+
 To update CPM.cmake:
 
 1. Check the download version [here](./cmake/CPM.cmake).
