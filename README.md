@@ -59,7 +59,7 @@ ctest --preset=test
 
 ### Including in Your Project
 
-To include this library in your project using CPM:
+To include this library in your project using CPM (replace X.Y.Z with the release version)
 
 ```cmake
 CPMAddPackage("gh:stlab/stlab-copy-on-write@X.Y.Z")
@@ -138,31 +138,27 @@ To install or update CMake:
 
 - **macOS (Homebrew)**: `brew install cmake`
 - **Ubuntu/Debian**: `sudo apt update && sudo apt install cmake`
-- **Windows (Chocolatey)**: `choco install cmake`
-- **Windows (Scoop)**: `scoop install cmake`
+- **Windows**: Installed with Visual Studio
 
 **Verify Installation**: `cmake --version`
 
 #### CPM.cmake
 
+<!-- [DEPENDENCY] -->
+
 To update CPM.cmake:
 
-1. Visit the [CPM.cmake releases page](https://github.com/cpm-cmake/CPM.cmake/releases)
-2. Find the desired version and copy the download URL
-3. Update the version in the URL on line 11 of `CMakeLists.txt`
-4. Update the SHA256 hash on line 13 (found in the release assets)
+1. Check the download version [here](./cmake/CPM.cmake).
+2. Visit the [CPM.cmake releases page](https://github.com/cpm-cmake/CPM.cmake/releases).
+3. Follow the [CPM instructions](https://github.com/cpm-cmake/CPM.cmake) to update.
 
 **CPM Caching**: This project enables CPM's caching feature to avoid re-downloading dependencies.
-The cache is stored in `.cpm-cache/` and is automatically ignored by git. To customize the cache
+The cache is stored in `.cache/cpm` and is automatically ignored by git. To customize the cache
 location, set the `CPM_SOURCE_CACHE` environment variable or CMake variable.
 
 #### doctest
 
-To update doctest:
-
-1. Visit the [doctest releases page](https://github.com/doctest/doctest/releases)
-2. Find the desired version tag (e.g., `v2.4.12`)
-3. Update the `GIT_TAG` value on line 21 of `CMakeLists.txt`
+This dependency is automatically downloaded via CPM when building tests. The dependency is managed by cpp-library.
 
 #### Doxygen
 
@@ -172,8 +168,7 @@ To install or update Doxygen:
 
 - **macOS (Homebrew)**: `brew install doxygen`
 - **Ubuntu/Debian**: `sudo apt update && sudo apt install doxygen`
-- **Windows (Chocolatey)**: `choco install doxygen.install`
-- **Windows (Scoop)**: `scoop install doxygen`
+- **Windows**: `winget install doxygen`
 
 ##### Option 2: Official Installer
 
