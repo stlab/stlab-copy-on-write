@@ -8,7 +8,7 @@ include(cmake/CPM.cmake)
 #     NAME cpp-library
 #     SOURCE_DIR "${CMAKE_SOURCE_DIR}/../cpp-library"
 # )
-CPMAddPackage("gh:stlab/cpp-library@5.4.0")
+CPMAddPackage("gh:stlab/cpp-library@5.4.1")
 include(${cpp-library_SOURCE_DIR}/cpp-library.cmake)
 
 # Enable dependency tracking before project()
